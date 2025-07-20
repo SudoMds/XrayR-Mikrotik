@@ -149,12 +149,21 @@ while true; do
             fi
             read -rp "Enter port for web server [default 8000]: " port
             port=${port:-8000}
+            # Check if port is in use
+            if lsof -i :"$port" >/dev/null 2>&1; then
+                echo -e "${RED}Port $port is already in use. Please choose another port.${NC}"
+                read -rp "Press Enter to continue..."
+                continue
+            fi
             cd "$OUTPUT_DIR" || { echo -e "${RED}Failed to cd to $OUTPUT_DIR${NC}"; read -rp "Press Enter..."; continue; }
             echo "Starting web server at http://$(hostname -I | awk '{print $1}'):$port/"
             python3 -m http.server "$port" > /dev/null 2>&1 &
             echo $! > "$WEBSERVER_PID_FILE"
             echo -e "${GREEN}✅ Web server started. Access your files at:${NC}"
             echo -e "${CYAN}http://$(hostname -I | awk '{print $1}'):$port/${NC}"
+            echo -e "${YELLOW}⚠️  Warning: Stopping the web server later (option 7) will terminate any active downloads or connections.${NC}"
+            echo -e "${YELLOW}Make sure no critical transfer is in progress before stopping it.${NC}"
+            echo -e "${YELLOW}To stop the web server, use menu option 7.${NC}"
             read -rp "Press Enter to continue..."
             ;;
         7)
