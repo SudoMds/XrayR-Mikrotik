@@ -1,89 +1,90 @@
-XrayR-Mikrotik 🛡️
-XrayR-Mikrotik ابزاری است برای ساخت و راه‌اندازی یک کانتینر کاملاً سازگار از XrayR بر روی RouterOS میکروتیک با استفاده از قابلیت Container در MikroTik.
+### XrayR-Mikrotik 🛡️
+XrayR-Mikrotik is a tool designed to create and deploy a fully working XrayR container on MikroTik RouterOS using the MikroTik Container feature. This script solves the problem of the original XrayR Docker image not running correctly on MikroTik by preparing a compatible .tar container package.
 
-❓ این ابزار چیست؟
-وقتی نسخه اصلی Docker از XrayR را روی میکروتیک اجرا می‌کنید، معمولاً با مشکلاتی مواجه می‌شوید مثل:
+❓ What is This Tool?
+Many users encounter issues when deploying the original XrayR Docker image on MikroTik. These include:
 
-فایل پیکربندی config.yml بارگذاری نمی‌شود
+Config files like config.yml not being loaded.
 
-کانتینر کرش می‌کند و متوقف می‌شود
+Container crashes and stops unexpectedly.
 
-XrayR-Mikrotik این مشکلات را حل می‌کند و یک کانتینر آماده با .tar می‌سازد که:
+XrayR-Mikrotik solves this by automating the build process and preparing a MikroTik-compatible container package that:
 
-✅ پیکربندی شما را به‌درستی بارگذاری می‌کند
-✅ بدون خطا در RouterOS میکروتیک اجرا می‌شود
-✅ به صورت .tar قابل ایمپورت مستقیم در کانتینر میکروتیک است
+✅ Loads your configuration correctly
+✅ Boots without errors on MikroTik RouterOS
+✅ Is packaged in .tar format for direct import
 
-🛠 امکانات
-ویرایش سریع config.yml
+🛠 Features
+Pre-configures and edits your config.yml
 
-ساخت ایمیج Docker شخصی‌سازی‌شده
+Builds a working XrayR Docker image
 
-خروجی گرفتن به فرمت .tar
+Saves the image as a .tar file
 
-اجرای فایل‌سرور موقت برای دریافت ایمیج از میکروتیک
+Optionally runs a temporary web server to serve the .tar
 
-سازگار با سیستم کانتینر میکروتیک
+Compatible with MikroTik's Container system
 
-🚀 مراحل سریع نصب (لینوکس)
-در ترمینال لینوکس خود اجرا کنید:
+🚀 Quick Setup (Linux)
+Run this script on any Linux server (Debian, Ubuntu, CentOS):
 
-bash
-Copy
-Edit
 wget https://raw.githubusercontent.com/SudoMds/XrayR-Mikrotik/refs/heads/main/XMikro.sh
 chmod +x XMikro.sh
 bash XMikro.sh
-سپس مراحل اسکریپت را دنبال کنید.
+Then follow the interactive steps.
 
-⚠️ اگر فایل‌سرور موقت را فعال کردید، حتماً در پایان از طریق منوی اسکریپت آن را متوقف کنید.
+⚠️ If you start the temporary web server (to download image from MikroTik), don’t forget to stop it using the provided option at the end.
 
-🔧 این اسکریپت چه کاری انجام می‌دهد؟
-کلون کردن پروژه XrayR از گیت‌هاب
+🔧 What Does the Script Do?
+Clones the XrayR GitHub repo
 
-دانلود Dockerfile آماده
+Downloads a custom Dockerfile
 
-ویرایش فایل config.yml
+Allows you to edit your config.yml
 
-ساخت ایمیج Docker
+Builds the customized Docker image
 
-خروجی گرفتن به فرمت .tar
+Saves it as a .tar file
 
-(اختیاری) اجرای فایل‌سرور برای دریافت فایل
+(Optional) Hosts the .tar over a simple HTTP server
 
-(مهم) توقف فایل‌سرور پس از اتمام
+(Optional) Stops the HTTP server
 
-📦 آموزش تنظیم کانتینر در MikroTik
-مرحله ۱: تنظیمات شبکه (از طریق ترمینال)
+📦 MikroTik Container Setup
+Step 1: Network Configuration (CLI)
+Open MikroTik terminal:
+
+
 /interface bridge add name=docker comment="Docker Container Bridge"
 /ip address add address=172.0.0.1/24 interface=docker comment="Docker Bridge IP"
 /interface veth add name=veth-docker address=172.0.0.2/24 gateway=172.0.0.1 comment="Container Virtual NIC"
 /interface bridge port add bridge=docker interface=veth-docker
 /ip firewall nat add chain=srcnat out-interface=docker action=masquerade comment="NAT for Containers"
+Step 2: Upload Container
+From your Linux server, download the .tar image you created.
 
-مرحله ۲: آپلود فایل کانتینر
-فایل .tar ساخته‌شده را از سرور لینوکس دانلود کنید
+Upload it to your MikroTik using Winbox, WebFig, or SCP.
 
-آن را با Winbox یا SCP در مسیر /container/xrayr آپلود کنید
+Place it in a new root folder, for example: /container/xrayr
 
-مرحله ۳: ساخت کانتینر در Winbox
-به مسیر System > Container بروید
+Step 3: Configure Container in Winbox
+Go to System → Container
 
-روی دکمه + کلیک کنید
+Click + to add a new container
 
-تنظیمات نمونه:
+Settings:
 
-تنظیم	مقدار
+Setting	Value
 File	xrayr-xxxx.tar
 Root Dir	/container/xrayr
 Interface	veth-docker
-DNS	1.1.1.1, 8.8.8.8
-Start on Boot	✔️
+DNS	1.1.1.1,8.8.8.8
+Start on Boot	☑️
 
-سپس روی کانتینر راست کلیک کرده و گزینه Start را بزنید
+Right-click on the container and choose Start
 
-✅ مطمئن شوید وضعیت کانتینر "running" باشد
+✅ Verify that status shows running
 
-🧠 توسعه‌دهنده
-ساخته‌شده با ❤️ توسط @SudoMds
+🧠 Credits
+Made with ❤️ by @SudoMds
 
