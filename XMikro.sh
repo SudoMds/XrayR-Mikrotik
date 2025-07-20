@@ -6,7 +6,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 WORKDIR="$(pwd)/XrayR-release"
-DOCKER_IMAGE_NAME="XrayR-MDS"
+DOCKER_IMAGE_NAME="xrayr-mds"
 DEFAULT_TAR_NAME="${DOCKER_IMAGE_NAME}.tar"
 
 function confirm() {
