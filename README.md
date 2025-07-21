@@ -1,5 +1,5 @@
 # XrayR-Mikrotik 🛡️
-
+### Now we have new repo , created ready to use docker image that works on mikrotik and no need to compile, check here : https://github.com/SudoMds/XrayR-Mikrotik-Docker
 **XrayR-Mikrotik** is a tool designed to create and deploy a fully working **XrayR** container on **MikroTik RouterOS** using the MikroTik **Container** feature. This script resolves the issues with running the original XrayR Docker image on MikroTik by preparing a compatible `.tar` container package.
 
 ---
